@@ -100,6 +100,8 @@ class WaterSample < ActiveRecord::Base
     # sample2.to_hash(true) 
     # #let's say only 3 factors exist in our factors table, with ids of 5, 6, and 9 
     #   => {:id =>2, :site => "North Hollywood Pump Station (well blend)", :chloroform => .00291, :bromoform => .00487, :bro   modichloromethane => .00547 , :dibromichlormethane => .0109, :factor_5 => .0213, :factor_6 => .0432, :factor_9 => 0.0321}
-    
+    result = attributes
+    FactorWeight.pluck(:id).inject(result) { |r, n| r["factor_#{n}"] = factor(n); r; } if include_factors
+    return result.symbolize_keys 
   end
 end
