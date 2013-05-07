@@ -2,7 +2,7 @@ require "spec_helper"
 
 describe WaterSample do
   describe "attributes" do
-    before :each do
+    before :all do
       @water_sample = WaterSample.new
     end
 
@@ -28,8 +28,19 @@ describe WaterSample do
   end
 
   describe "methods" do
-    before :each do
-      @water_sample = build(:water_sample_1)
+    before :all do
+      create(:factor_weight_1)
+      @water_sample_1 = build(:water_sample_1)
+    end
+
+    context "factor" do
+      it "exists" do
+        @water_sample_1.should respond_to :factor
+      end
+
+      it "returns the value 0.004992 when 1 is passed in" do
+        @water_sample_1.factor(1).should == 0.004992
+      end
     end
   end
 
