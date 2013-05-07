@@ -1,45 +1,84 @@
 require "spec_helper"
 
 describe WaterSample do
-  describe "attributes" do
+  describe "attribute" do
     before :all do
       @water_sample = WaterSample.new
     end
 
-    it "has a site" do
+    it "site exists" do
       @water_sample.should respond_to :site
     end
 
-    it "has chloroform" do
+    it "chloroform exists" do
       @water_sample.should respond_to :chloroform
     end
 
-    it "has bromoform" do
+    it "bromoform exists" do
       @water_sample.should respond_to :bromoform
     end
 
-    it "has bromodichloromethane" do
+    it "bromodichloromethane exists" do
       @water_sample.should respond_to :bromodichloromethane
     end
 
-    it "has dibromichloromethane" do
+    it "dibromichloromethane exists" do
       @water_sample.should respond_to :dibromichloromethane
     end
   end
 
-  describe "methods" do
+  describe "method" do
     before :all do
-      create(:factor_weight_1)
-      @water_sample_1 = build(:water_sample_1)
+     (1..4).each do |n|
+        create("factor_weight_#{n}")
+      end
     end
 
     context "factor" do
       it "exists" do
-        @water_sample_1.should respond_to :factor
+        build(:water_sample_1).should respond_to :factor
       end
 
-      it "returns the value 0.004992 when 1 is passed in" do
-        @water_sample_1.factor(1).should == 0.004992
+      (1..4).each do |n|
+        context "for water_sample_#{n}" do
+          before :all do
+            @water_sample = build("water_sample_#{n}")
+          end
+
+          (1..4).each do |m|
+            it "returns the correct value when #{m} is passed in" do
+              result = @water_sample.attributes.except("id", "site").sum { |k,v| v * FactorWeight.find(m)["#{k}_weight"] }
+              @water_sample.factor(m).should == result 
+            end
+          end
+        end
+      end
+    end
+
+    context "to_hash" do
+      it "exists" do
+        build(:water_sample_1).should respond_to :to_hash
+      end
+
+      (1..4).each do |n|
+        context "for water_sample_#{n}" do
+          before :all do
+            @water_sample = build("water_sample_#{n}")
+          end
+
+          it "returns the correct hash" do
+            result = @water_sample.attributes.symbolize_keys
+            @water_sample.to_hash.should == result 
+          end
+
+          it "returns the correct hash when including factors" do
+            result = @water_sample.attributes.symbolize_keys
+            (1..4).each do |n|
+              result.merge!({ :"factor_#{n}" => @water_sample.factor(n) })
+            end
+            @water_sample.to_hash(true).should == result 
+          end
+        end
       end
     end
   end
