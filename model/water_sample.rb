@@ -24,6 +24,7 @@ class WaterSample < ActiveRecord::Base
   #
   # The schema it must interact with and some sample data should be delivered 
   # with your assignment as a MySQL dump
+  validates :site, presence: true
 
   def self.find(sample_id)
     # spec
