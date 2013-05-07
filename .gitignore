@@ -1,0 +1,5 @@
+.bundle
+.ruby-version
+vendor
+config/database.yml
+*.sql
