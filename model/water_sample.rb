@@ -78,7 +78,7 @@ class WaterSample < ActiveRecord::Base
   # 
   #
   # Return the value of the computed factor with id of factor_weights_id
-  def factor(factor_weights_id)
+  def factor(factor_weight_id)
     # spec:
     #  sample2 = WaterSample.find(2)
     #  sample2.factor(6) #computes the 6th factor of sample #2
@@ -87,6 +87,8 @@ class WaterSample < ActiveRecord::Base
     # above, that's because I want you to be sure you understand how to compute
     # this value conceptually.
 
+    factor_weight = FactorWeight.find(factor_weight_id)
+    return attributes.except("id", "site").sum { |attribute, value| value * factor_weight["#{attribute}_weight"] }
   end
 
   # convert the object to a hash
