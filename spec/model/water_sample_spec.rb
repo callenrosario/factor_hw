@@ -72,11 +72,9 @@ describe WaterSample do
           end
 
           it "returns the correct hash when including factors" do
-            result = @water_sample.attributes.symbolize_keys
-            (1..4).each do |n|
-              result.merge!({ :"factor_#{n}" => @water_sample.factor(n) })
-            end
-            @water_sample.to_hash(true).should == result 
+            result = @water_sample.attributes
+            (1..4).inject(result) { |r, n| r["factor_#{n}"] = @water_sample.factor(n); r; }
+            @water_sample.to_hash(true).should == result.symbolize_keys 
           end
         end
       end

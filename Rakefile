@@ -1,6 +1,6 @@
 require 'active_record'
 require 'yaml'
- 
+
 namespace :db do
   task :environment do
     DATABASE_ENV = ENV['DATABASE_ENV'] || 'development'
@@ -20,6 +20,7 @@ namespace :db do
     options = {:charset => 'utf8', :collation => 'utf8_unicode_ci'}
  
     create_db = lambda do |config|
+      $stdout.puts "Creating database #{config["database"]}..."
       ActiveRecord::Base.establish_connection config.merge('database' => nil)
       ActiveRecord::Base.connection.create_database config['database'], options
       ActiveRecord::Base.establish_connection config
@@ -29,8 +30,6 @@ namespace :db do
       create_db.call @config
     rescue => err
       $stderr.puts err.message
-      $stderr.puts "Couldn't create database for #{@config.inspect}, charset: utf8, collation: utf8_unicode_ci"
-      $stderr.puts "(if you set the charset manually, make sure you have a matching collation)" if @config['charset']
       exit
     end
   end
@@ -38,6 +37,7 @@ namespace :db do
   desc 'Migrate the database (options: VERSION=x, VERBOSE=false).'
   task :migrate => :configure_connection do
     migrate_db = lambda do |version|
+      $stdout.puts "Running migrations..."
       ActiveRecord::Migration.verbose = true
       ActiveRecord::Migrator.migrate MIGRATIONS_DIR, version ? version.to_i : nil
     end
@@ -53,6 +53,7 @@ namespace :db do
   desc 'Drops the database for the current DATABASE_ENV'
   task :drop => :configure_connection do
     drop_db = lambda do |config|
+      $stdout.puts "Dropping database #{config["database"]}..."
       ActiveRecord::Base.connection.drop_database config['database']
     end
 
@@ -60,11 +61,10 @@ namespace :db do
       drop_db.call @config 
     rescue => err
       $stderr.puts err.message
-      exit
     end
   end
 
-  task :prepare => [:drop, :create, :migrate]
+  task :reset => [:drop, :create, :migrate]
   task :all => [:create, :migrate]
 
   namespace :test do
@@ -83,7 +83,7 @@ namespace :db do
       Rake::Task['db:drop'].invoke
     end
 
-    task :prepare => [:drop, :create, :migrate]
+    task :reset => [:drop, :create, :migrate]
     task :all => [:create, :migrate]
   end
 end

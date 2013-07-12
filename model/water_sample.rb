@@ -1,4 +1,3 @@
-#
 # Assignment:
 #
 # Implement the methods as specfied in the following class, plus any you need to use to make your life easier.
@@ -18,6 +17,17 @@
 # and their collective concentration cannot exceed .080 mg/L
 #
 # (from http://water.epa.gov/drink/contaminants/index.cfm#List )
+#
+# +----------------------+--------------+------+-----+---------+----------------+
+# | Field                | Type         | Null | Key | Default | Extra          |
+# +----------------------+--------------+------+-----+---------+----------------+
+# | id                   | int(11)      | NO   | PRI | NULL    | auto_increment |
+# | site                 | varchar(255) | YES  |     | NULL    |                |
+# | chloroform           | float        | YES  |     | NULL    |                |
+# | bromoform            | float        | YES  |     | NULL    |                |
+# | bromodichloromethane | float        | YES  |     | NULL    |                |
+# | dibromichloromethane | float        | YES  |     | NULL    |                |
+# +----------------------+--------------+------+-----+---------+----------------+
 class WaterSample < ActiveRecord::Base
   # This class intends to ease the managing of the collected sample data, 
   # and assist in computing factors of the data.

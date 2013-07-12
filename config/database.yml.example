@@ -1,6 +1,12 @@
 development:
   adapter: mysql2
   host: localhost
-  database: factor_hw 
-  username: 
-  password: 
+  database: factor_hw_development 
+  username: example
+  password: 12345
+test:
+  adapter: mysql2
+  host: localhost
+  database: factor_hw_test
+  username: example
+  password: 12345

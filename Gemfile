@@ -5,4 +5,3 @@ gem "factory_girl", "4.2.0"
 gem "mysql2", "0.3.11"
 gem "rake", "10.0.4"
 gem "rspec", "2.13.0"
-gem "awesome_print", require: ["ap"]
